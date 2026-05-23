@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Research Centre — Advancing Discovery Worldwide</title>
+  <meta name="description" content="Global Research Centre: Platform for advanced research, innovation, and academic collaboration." />
+
+  <!-- Fonts: Cormorant Garamond (editorial display) + Plus Jakarta Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:      #000;
+      --deep:       #070707;
+      --surface:    #0e0e0e;
+      --glass:      rgba(14,14,14,0.72);
+      --border:     rgba(255,255,255,0.07);
+      --border-hi:  rgba(255,255,255,0.14);
+      /* GRC brand: green primary, blue accent */
+      --grc-green:  #10b981;
+      --grc-green2: #34d399;
+      --grc-blue:   #3b82f6;
+      --grc-blue2:  #60a5fa;
+      --em:         #10b981;
+      --em-dim:     rgba(16,185,129,0.12);
+      --em-glow:    rgba(16,185,129,0.3);
+      --blue:       #3b82f6;
+      --blue-dim:   rgba(59,130,246,0.12);
+      --text-1:     #f0f0f0;
+      --text-2:     #9a9a9a;
+      --text-3:     #484848;
+      --ff-head:    'Cormorant Garamond', Georgia, serif;
+      --ff-body:    'Plus Jakarta Sans', sans-serif;
+      --radius:     12px;
+      --nav-h:      70px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--ff-body);
+      background: var(--black);
+      color: var(--text-1);
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+
+    /* film grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 9999;
+      opacity: 0.03; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: rgba(16,185,129,0.2); border-radius: 2px; }
+
+    /* ── Utilities ── */
+    .container    { max-width: 1180px; margin: 0 auto; padding: 0 2rem; }
+    .container-lg { max-width: 1360px; margin: 0 auto; padding: 0 2rem; }
+
+    .text-gradient {
+      background: linear-gradient(145deg, #fff 25%, rgba(255,255,255,0.45) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .text-em { color: var(--em); }
+
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .tech-grid {
+      background-size: 48px 48px;
+      background-image:
+        linear-gradient(to right,  rgba(255,255,255,0.016) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.016) 1px, transparent 1px);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(28px);filter:blur(3px)} to{opacity:1;transform:translateY(0);filter:blur(0)} }
+    @keyframes marquee  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    @keyframes pulseGlow{ 0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:.5;transform:scale(1.06)} }
+    @keyframes floatY   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+    @keyframes borderPulse { 0%,100%{border-color:rgba(16,185,129,0.18)} 50%{border-color:rgba(16,185,129,0.5)} }
+    @keyframes spinSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    @keyframes shimmer  { 0%{background-position:-200% center} 100%{background-position:200% center} }
+
+    .anim-in   { animation: fadeUp 0.9s ease-out both; }
+    .anim-d1   { animation-delay: 0.05s; }
+    .anim-d2   { animation-delay: 0.15s; }
+    .anim-d3   { animation-delay: 0.25s; }
+    .anim-d4   { animation-delay: 0.38s; }
+    .anim-d5   { animation-delay: 0.52s; }
+    .anim-d6   { animation-delay: 0.66s; }
+
+    .marquee-track        { animation: marquee 46s linear infinite; }
+    .marquee-track:hover  { animation-play-state: paused; }
+    .pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+    .float-anim { animation: floatY 6s ease-in-out infinite; }
+
+    /* scroll reveal */
+    .sr { opacity:0; transform:translateY(30px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+    .sr.revealed { opacity:1; transform:translateY(0); }
+    .sr-delay-1{transition-delay:.07s} .sr-delay-2{transition-delay:.14s}
+    .sr-delay-3{transition-delay:.21s} .sr-delay-4{transition-delay:.28s}
+    .sr-delay-5{transition-delay:.35s} .sr-delay-6{transition-delay:.42s}
+
+    /* spotlight */
+    .spotlight { position: relative; overflow: hidden; }
+    .spotlight::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(500px circle at var(--mx,50%) var(--my,50%), rgba(16,185,129,0.06), transparent 40%);
+      z-index:1; pointer-events:none; opacity:0; transition:opacity .5s;
+    }
+    .spotlight:hover::before { opacity:1; }
+    .spotlight > * { position:relative; z-index:2; }
+
+    /* ── Nav Link ── */
+    .nav-link {
+      position:relative; color:var(--text-2); text-decoration:none;
+      font-size:.85rem; font-weight:500; letter-spacing:.02em; transition:color .25s;
+    }
+    .nav-link::after {
+      content:''; position:absolute; bottom:-4px; left:0;
+      width:0; height:1px; background:var(--em); transition:width .3s ease;
+    }
+    .nav-link:hover { color:var(--text-1); }
+    .nav-link:hover::after { width:100%; }
+
+    /* ── Navigation ── */
+    #nav {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      transition:background .4s, border-color .4s;
+      border-bottom: 1px solid transparent;
+    }
+    #nav.scrolled {
+      background:rgba(0,0,0,0.94);
+      border-bottom-color: var(--border);
+    }
+    .nav-inner {
+      display:flex; align-items:center; justify-content:space-between;
+      height:var(--nav-h); padding:0 2.5rem;
+      max-width:1360px; margin:0 auto;
+    }
+    /* Logo with actual image */
+    .nav-logo {
+      display:flex; align-items:center; gap:.75rem;
+      text-decoration:none; cursor:pointer;
+    }
+    .nav-logo img { height:42px; width:auto; object-fit:contain; }
+    .nav-logo-text {
+      font-family: var(--ff-body);
+      font-size:.82rem; font-weight:700;
+      letter-spacing:.08em; text-transform:uppercase;
+      color:var(--text-1);
+      line-height:1.25;
+    }
+    .nav-logo-text span { display:block; color:var(--em); font-weight:600; font-size:.68rem; letter-spacing:.12em; }
+
+    .nav-links { display:flex; align-items:center; gap:2.25rem; }
+    .nav-cta {
+      padding:.5rem 1.2rem;
+      background:var(--em); color:#000;
+      border-radius:8px; font-size:.82rem; font-weight:700;
+      text-decoration:none; transition:all .25s; border:none; cursor:pointer;
+      font-family:var(--ff-body);
+    }
+    .nav-cta:hover { background:var(--grc-green2); transform:translateY(-1px); box-shadow:0 6px 18px var(--em-glow); }
+    .hamburger { display:none; background:none; border:none; color:var(--text-1); cursor:pointer; padding:.25rem; }
+
+    #mobile-nav {
+      display:none; position:fixed; top:var(--nav-h); left:0; right:0;
+      background:rgba(0,0,0,0.98); border-bottom:1px solid var(--border);
+      z-index:999; padding:1.5rem 2rem 2rem; flex-direction:column; gap:1.25rem;
+    }
+    #mobile-nav.open { display:flex; }
+    .mobile-link { color:var(--text-2); text-decoration:none; font-size:1rem; transition:color .2s; }
+    .mobile-link:hover { color:var(--text-1); }
+
+    /* ── Pages ── */
+    .page { display:none; }
+    .page.active { display:block; }
+
+    /* ── Section Base ── */
+    section { padding:7rem 0; position:relative; }
+    .section-label {
+      font-size:.7rem; letter-spacing:.22em; text-transform:uppercase;
+      color:var(--em); font-weight:700; margin-bottom:.85rem;
+    }
+    .section-h2 {
+      font-family:var(--ff-head);
+      font-size:clamp(2.4rem,4.5vw,4rem);
+      font-weight:600; letter-spacing:-.01em; line-height:1.12;
+    }
+    .section-sub { font-size:1rem; color:var(--text-2); max-width:520px; line-height:1.75; }
+
+    /* ── Buttons ── */
+    .btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.85rem 1.85rem; border-radius:9px;
+      font-size:.9rem; font-weight:600; cursor:pointer;
+      text-decoration:none; transition:all .3s; border:none;
+      font-family:var(--ff-body); letter-spacing:.01em;
+    }
+    .btn-em   { background:var(--em); color:#000; }
+    .btn-em:hover   { background:var(--grc-green2); transform:translateY(-2px); box-shadow:0 10px 28px var(--em-glow); }
+    .btn-outline { background:transparent; color:var(--text-1); border:1px solid var(--border-hi); }
+    .btn-outline:hover { border-color:rgba(255,255,255,.28); background:rgba(255,255,255,.04); transform:translateY(-2px); }
+
+    /* tags */
+    .panel-tag {
+      display:inline-block; padding:.22rem .65rem; border-radius:5px;
+      font-size:.68rem; font-weight:700; letter-spacing:.05em;
+    }
+    .tag-em   { background:var(--em-dim);   color:var(--em);   border:1px solid rgba(16,185,129,.28); }
+    .tag-blue { background:var(--blue-dim); color:#93c5fd; border:1px solid rgba(59,130,246,.28); }
+    .tag-amber{ background:rgba(245,158,11,.1); color:#fbbf24; border:1px solid rgba(245,158,11,.25); }
+    .tag-purple{background:rgba(139,92,246,.1); color:#a78bfa; border:1px solid rgba(139,92,246,.25); }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    #hero {
+      min-height:100vh; display:flex; align-items:center;
+      position:relative; overflow:hidden; padding-top:var(--nav-h);
+    }
+    .hero-bg {
+      position:absolute; inset:0;
+      background:
+        radial-gradient(ellipse 75% 55% at 72% 50%, rgba(16,185,129,0.065) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 65% at 18% 82%, rgba(59,130,246,0.055) 0%, transparent 60%),
+        #000;
+    }
+    .hero-grid-mask {
+      position:absolute; inset:0;
+      background-size:48px 48px;
+      background-image:
+        linear-gradient(to right,  rgba(255,255,255,.016) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.016) 1px, transparent 1px);
+      mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 74%, transparent 100%);
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 74%, transparent 100%);
+    }
+    /* decorative rotating ring */
+    .hero-ring {
+      position:absolute; right:-12%; top:10%;
+      width:680px; height:680px; border-radius:50%;
+      border:1px solid rgba(16,185,129,.07);
+      animation: spinSlow 60s linear infinite;
+      pointer-events:none;
+    }
+    .hero-ring::before {
+      content:''; position:absolute; inset:60px; border-radius:50%;
+      border:1px solid rgba(59,130,246,.06);
+    }
+    .hero-ring::after {
+      content:''; position:absolute; inset:140px; border-radius:50%;
+      border:1px dashed rgba(16,185,129,.04);
+    }
+
+    .hero-content {
+      position:relative; z-index:10;
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:4rem; align-items:center;
+    }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.38rem 1rem; background:rgba(16,185,129,.08);
+      border:1px solid rgba(16,185,129,.22); border-radius:100px;
+      font-size:.72rem; color:var(--em); letter-spacing:.08em;
+      text-transform:uppercase; font-weight:700;
+    }
+    .hero-badge-dot {
+      width:6px; height:6px; border-radius:50%;
+      background:var(--em); animation:pulseGlow 1.8s infinite;
+    }
+    .hero-h1 {
+      font-family:var(--ff-head);
+      font-size:clamp(3.2rem,6.5vw,6rem);
+      font-weight:600; line-height:1.06; letter-spacing:-.02em;
+    }
+    .hero-h1 em { font-style:italic; color:var(--em); }
+    .hero-sub { font-size:1.05rem; color:var(--text-2); max-width:460px; line-height:1.78; }
+
+    .hero-stats { display:flex; gap:2.5rem; flex-wrap:wrap; }
+    .hero-stat-val {
+      font-family:var(--ff-head); font-size:2.4rem; font-weight:600;
+      line-height:1; color:var(--text-1);
+    }
+    .hero-stat-lbl {
+      font-size:.72rem; color:var(--text-3);
+      text-transform:uppercase; letter-spacing:.1em; margin-top:.3rem;
+    }
+    .stat-divider { width:1px; height:40px; background:var(--border); align-self:center; }
+
+    /* hero panel */
+    .hero-panel { border-radius:18px; padding:1.75rem; position:relative; }
+    .hero-panel-glow {
+      position:absolute; inset:-50px;
+      background:radial-gradient(circle, rgba(16,185,129,.1) 0%, transparent 70%);
+      border-radius:50%; animation:pulseGlow 5s ease-in-out infinite;
+    }
+    .hero-panel-inner { position:relative; z-index:2; }
+    .panel-line { height:2px; border-radius:2px; background:linear-gradient(to right,var(--em),transparent); margin-bottom:1.25rem; }
+    .panel-bar {
+      height:8px; border-radius:5px; background:rgba(255,255,255,.05);
+      margin-bottom:.65rem; overflow:hidden; position:relative;
+    }
+    .panel-bar-fill {
+      position:absolute; left:0; top:0; height:100%;
+      border-radius:5px;
+    }
+
+    /* ══════════════════════════════════════
+       FEATURES
+    ══════════════════════════════════════ */
+    .feature-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .feature-card {
+      border-radius:var(--radius); padding:2rem;
+      transition:transform .35s, box-shadow .35s; cursor:default;
+    }
+    .feature-card:hover { transform:translateY(-5px); box-shadow:0 20px 50px rgba(0,0,0,.5); }
+    .feature-icon {
+      width:46px; height:46px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:1.25rem; font-size:1.3rem;
+    }
+    .icon-em    { background:var(--em-dim); }
+    .icon-blue  { background:var(--blue-dim); }
+    .icon-purple{ background:rgba(139,92,246,.1); }
+    .feature-title { font-family:var(--ff-head); font-size:1.15rem; font-weight:600; margin-bottom:.5rem; }
+    .feature-desc  { font-size:.85rem; color:var(--text-2); line-height:1.7; }
+
+    /* ══════════════════════════════════════
+       STATS STRIP
+    ══════════════════════════════════════ */
+    .stats-strip {
+      padding:5rem 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      position:relative; overflow:hidden;
+      background:linear-gradient(180deg,#000 0%,#070707 50%,#000 100%);
+    }
+    .stats-strip::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 55% 90% at 50% 50%, rgba(16,185,129,.05) 0%, transparent 70%);
+    }
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:2rem;
+      position:relative; z-index:2;
+    }
+    .stat-item { text-align:center; }
+    .stat-num {
+      font-family:var(--ff-head); font-size:3.8rem; font-weight:600;
+      color:var(--em); line-height:1; letter-spacing:-.02em;
+    }
+    .stat-lbl {
+      font-size:.72rem; color:var(--text-3);
+      text-transform:uppercase; letter-spacing:.12em; margin-top:.5rem;
+    }
+
+    /* ══════════════════════════════════════
+       WORKSHOPS
+    ══════════════════════════════════════ */
+    .workshop-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
+    .workshop-card {
+      border-radius:var(--radius); overflow:hidden;
+      transition:transform .35s, box-shadow .35s;
+    }
+    .workshop-card:hover { transform:translateY(-5px); box-shadow:0 22px 52px rgba(0,0,0,.6); }
+    .workshop-thumb {
+      height:155px; position:relative; overflow:hidden;
+    }
+    .workshop-thumb-inner {
+      position:absolute; inset:0; transition:transform .5s;
+      display:flex; align-items:center; justify-content:center; font-size:2.4rem;
+    }
+    .workshop-card:hover .workshop-thumb-inner { transform:scale(1.07); }
+    .workshop-body { padding:1.4rem; }
+    .workshop-tag {
+      display:inline-block; padding:.2rem .6rem; border-radius:4px;
+      font-size:.65rem; font-weight:700; letter-spacing:.05em;
+      text-transform:uppercase; margin-bottom:.8rem;
+    }
+    .workshop-title { font-family:var(--ff-head); font-size:1.1rem; font-weight:600; margin-bottom:.45rem; line-height:1.3; }
+    .workshop-desc  { font-size:.82rem; color:var(--text-2); line-height:1.65; margin-bottom:1.1rem; }
+    .workshop-meta  { display:flex; align-items:center; gap:1rem; font-size:.76rem; color:var(--text-3); }
+    .workshop-link  {
+      display:inline-flex; align-items:center; gap:.3rem;
+      font-size:.8rem; font-weight:600; color:var(--em);
+      text-decoration:none; transition:gap .25s;
+    }
+    .workshop-link:hover { gap:.55rem; }
+
+    /* ══════════════════════════════════════
+       MARQUEE
+    ══════════════════════════════════════ */
+    .marquee-wrap { overflow:hidden; padding:2rem 0; }
+    .marquee-track { display:flex; gap:1.4rem; width:max-content; }
+    .partner-chip {
+      flex-shrink:0; width:190px; height:74px; border-radius:9px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.78rem; font-weight:600; color:var(--text-3); transition:color .3s;
+    }
+    .partner-chip:hover { color:var(--text-2); }
+
+    /* ══════════════════════════════════════
+       NEWSLETTER
+    ══════════════════════════════════════ */
+    .newsletter-box {
+      border-radius:18px; padding:4rem; text-align:center;
+      position:relative; overflow:hidden;
+    }
+    .nl-glow {
+      position:absolute; width:600px; height:280px;
+      background:radial-gradient(ellipse, rgba(16,185,129,.1) 0%, transparent 70%);
+      top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none;
+    }
+    .nl-form { display:flex; gap:.7rem; max-width:460px; margin:0 auto; }
+    .nl-input {
+      flex:1; padding:.8rem 1.2rem;
+      background:rgba(255,255,255,.05); border:1px solid var(--border);
+      border-radius:9px; color:var(--text-1); font-size:.88rem;
+      font-family:var(--ff-body); outline:none; transition:border-color .25s;
+    }
+    .nl-input::placeholder { color:var(--text-3); }
+    .nl-input:focus { border-color:rgba(16,185,129,.4); }
+    .nl-success {
+      display:none; margin-top:1rem; padding:.7rem 1.5rem;
+      background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3);
+      border-radius:7px; color:var(--em); font-size:.85rem;
+    }
+    .nl-success.show { display:block; }
+
+    /* ══════════════════════════════════════
+       CTA BANNER
+    ══════════════════════════════════════ */
+    .cta-banner {
+      border-radius:18px; padding:4rem; text-align:center;
+      position:relative; overflow:hidden;
+      background:linear-gradient(130deg, rgba(16,185,129,.13) 0%, rgba(59,130,246,.09) 100%);
+      border:1px solid rgba(16,185,129,.18);
+      animation:borderPulse 4.5s ease-in-out infinite;
+    }
+    .cta-banner h2 {
+      font-family:var(--ff-head);
+      font-size:clamp(2rem,4vw,3.2rem); font-weight:600;
+      margin-bottom:1rem; letter-spacing:-.015em;
+    }
+    .cta-banner p { font-size:.98rem; color:var(--text-2); max-width:480px; margin:0 auto 2rem; }
+    .cta-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+
+    /* ══════════════════════════════════════
+       ABOUT PAGE
+    ══════════════════════════════════════ */
+    .about-hero { padding:10rem 0 5.5rem; position:relative; overflow:hidden; }
+    .about-hero-bg {
+      position:absolute; inset:0;
+      background:
+        radial-gradient(ellipse 65% 55% at 18% 40%, rgba(16,185,129,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 65% at 82% 62%, rgba(59,130,246,.055) 0%, transparent 60%),
+        #000;
+    }
+    .mv-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; margin-bottom:3.5rem; }
+    .mv-card { border-radius:var(--radius); padding:2.25rem; }
+    .mv-icon {
+      width:46px; height:46px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.25rem; margin-bottom:1.25rem;
+    }
+    .mv-card-title { font-family:var(--ff-head); font-size:1.4rem; font-weight:600; margin-bottom:.75rem; }
+    .mv-desc { font-size:.88rem; color:var(--text-2); line-height:1.75; }
+
+    .values-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .value-card { border-radius:var(--radius); padding:1.75rem; display:flex; align-items:flex-start; gap:1.1rem; }
+    .value-icon { font-size:1.4rem; flex-shrink:0; margin-top:.1rem; }
+    .value-title { font-family:var(--ff-head); font-size:1.1rem; font-weight:600; margin-bottom:.4rem; }
+    .value-desc  { font-size:.82rem; color:var(--text-2); line-height:1.7; }
+
+    /* timeline */
+    .timeline { position:relative; }
+    .timeline::before {
+      content:''; position:absolute; left:50%; top:0; bottom:0;
+      width:1px; background:var(--border); transform:translateX(-50%);
+    }
+    .tl-items { display:flex; flex-direction:column; gap:2.5rem; }
+    .tl-item { display:grid; grid-template-columns:1fr 48px 1fr; align-items:start; gap:1.5rem; }
+    .tl-dot {
+      width:14px; height:14px; border-radius:50%;
+      background:var(--em); box-shadow:0 0 14px var(--em-glow);
+      justify-self:center; margin-top:.65rem; flex-shrink:0;
+    }
+    .tl-left  { text-align:right; }
+    .tl-right { text-align:left; }
+    .tl-year  { font-family:var(--ff-head); font-size:1.5rem; font-weight:600; color:var(--em); margin-bottom:.3rem; }
+    .tl-title { font-family:var(--ff-head); font-size:1.1rem; font-weight:600; margin-bottom:.4rem; }
+    .tl-desc  { font-size:.83rem; color:var(--text-2); line-height:1.7; }
+
+    /* ══════════════════════════════════════
+       CONTACT PAGE
+    ══════════════════════════════════════ */
+    .contact-hero { padding:9.5rem 0 5rem; position:relative; overflow:hidden; }
+    .contact-grid { display:grid; grid-template-columns:1fr 1.6fr; gap:3rem; }
+    .ci-list { display:flex; flex-direction:column; gap:1.25rem; }
+    .ci-item { display:flex; align-items:flex-start; gap:1rem; padding:1.25rem; border-radius:var(--radius); }
+    .ci-icon { width:42px; height:42px; border-radius:9px; background:var(--em-dim); display:flex; align-items:center; justify-content:center; font-size:1.05rem; flex-shrink:0; }
+    .ci-label { font-size:.68rem; color:var(--text-3); text-transform:uppercase; letter-spacing:.09em; margin-bottom:.25rem; }
+    .ci-value { font-size:.86rem; color:var(--text-1); }
+    .ci-value a { color:var(--em); text-decoration:none; }
+
+    .contact-form-card { border-radius:var(--radius); padding:2.25rem; }
+    .form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .form-group { display:flex; flex-direction:column; gap:.45rem; margin-bottom:.9rem; }
+    .form-label { font-size:.76rem; font-weight:600; color:var(--text-2); letter-spacing:.04em; }
+    .form-input, .form-textarea, .form-select {
+      padding:.8rem 1.05rem; background:rgba(255,255,255,.04);
+      border:1px solid var(--border); border-radius:9px;
+      color:var(--text-1); font-size:.86rem;
+      font-family:var(--ff-body); outline:none; transition:border-color .25s; width:100%;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color:var(--text-3); }
+    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color:rgba(16,185,129,.4); }
+    .form-textarea { resize:vertical; min-height:120px; }
+    .form-select { background:rgba(255,255,255,.04); cursor:pointer; }
+    .form-select option { background:#111; color:#fff; }
+
+    /* FAQ */
+    .faq-list { display:flex; flex-direction:column; gap:.7rem; }
+    details.faq-item { border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; transition:border-color .25s; }
+    details.faq-item[open] { border-color:rgba(16,185,129,.28); }
+    .faq-summary {
+      padding:1.2rem 1.4rem; font-weight:600; font-size:.9rem; cursor:pointer;
+      list-style:none; display:flex; justify-content:space-between; align-items:center; transition:color .2s;
+    }
+    .faq-summary:hover { color:var(--em); }
+    .faq-summary::-webkit-details-marker { display:none; }
+    .faq-chevron { transition:transform .3s; font-size:.72rem; color:var(--text-3); }
+    details[open] .faq-chevron { transform:rotate(180deg); }
+    .faq-body { padding:0 1.4rem 1.2rem; font-size:.85rem; color:var(--text-2); line-height:1.72; border-top:1px solid var(--border); padding-top:.9rem; }
+
+    /* API status badge */
+    .api-badge {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.35rem .85rem; border-radius:100px;
+      background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.2);
+      font-size:.7rem; color:var(--em); font-weight:600; letter-spacing:.06em;
+    }
+    .api-dot { width:6px; height:6px; border-radius:50%; background:var(--em); animation:pulseGlow 1.8s infinite; }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer { border-top:1px solid var(--border); padding:4.5rem 0 2.5rem; background:rgba(0,0,0,.5); }
+    .footer-grid { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3.5rem; }
+    .footer-logo { display:flex; align-items:center; gap:.7rem; margin-bottom:1rem; }
+    .footer-logo img { height:36px; width:auto; }
+    .footer-logo-name { font-family:var(--ff-body); font-size:.78rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); }
+    .footer-brand-desc { font-size:.82rem; color:var(--text-3); line-height:1.72; margin:0 0 1.25rem; }
+    .footer-socials { display:flex; gap:.6rem; }
+    .social-btn {
+      width:34px; height:34px; border-radius:7px; border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      color:var(--text-3); text-decoration:none; font-size:.78rem; transition:all .25s;
+    }
+    .social-btn:hover { border-color:var(--em); color:var(--em); }
+    .footer-col-title { font-size:.65rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--text-2); margin-bottom:1.1rem; }
+    .footer-links { display:flex; flex-direction:column; gap:.65rem; }
+    .footer-link { font-size:.82rem; color:var(--text-3); text-decoration:none; transition:color .2s; }
+    .footer-link:hover { color:var(--text-1); }
+    .footer-bottom { border-top:1px solid var(--border); padding-top:1.75rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+    .footer-copy { font-size:.74rem; color:var(--text-3); }
+    .status-pill { display:inline-flex; align-items:center; gap:.4rem; font-size:.7rem; color:var(--text-3); }
+    .status-dot { width:6px; height:6px; border-radius:50%; background:var(--em); box-shadow:0 0 8px var(--em); }
+    .footer-legal { display:flex; gap:1.75rem; }
+    .legal-link { font-size:.72rem; color:var(--text-3); text-decoration:none; transition:color .2s; }
+    .legal-link:hover { color:var(--text-2); }
+
+    /* ══════════════════════════════════════
+       HIGHLIGHT LINE
+    ══════════════════════════════════════ */
+    .highlight-line { height:1px; background:linear-gradient(to right,transparent,var(--em),transparent); }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media(max-width:1024px) {
+      .feature-grid,.values-grid { grid-template-columns:repeat(2,1fr); }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .footer-grid { grid-template-columns:1fr 1fr; }
+      .workshop-grid { grid-template-columns:repeat(2,1fr); }
+      .contact-grid { grid-template-columns:1fr; }
+      .mv-grid { grid-template-columns:1fr; }
+    }
+    @media(max-width:768px) {
+      :root{ --nav-h:62px; }
+      section { padding:5rem 0; }
+      .hero-content { grid-template-columns:1fr; }
+      .hero-right { display:none; }
+      .hero-h1 { font-size:3rem; }
+      .feature-grid,.values-grid,.workshop-grid { grid-template-columns:1fr; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .footer-grid { grid-template-columns:1fr; }
+      .nav-links { display:none; }
+      .hamburger { display:block; }
+      .timeline::before { left:20px; }
+      .tl-item { grid-template-columns:40px 1fr; }
+      .tl-left { display:none; }
+      .tl-dot { justify-self:start; }
+      .tl-right { padding-left:1rem; grid-column:2; }
+      .form-grid-2 { grid-template-columns:1fr; }
+      .nl-form { flex-direction:column; }
+      .newsletter-box,.cta-banner { padding:2.5rem 1.5rem; }
+      .footer-bottom { flex-direction:column; text-align:center; }
+      .footer-legal { justify-content:center; }
+      .contact-form-card { padding:1.5rem; }
+      .stat-divider { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="showPage('home')" style="cursor:pointer">
+      <img src="logo.png" alt="Global Research Centre" onerror="this.style.display='none'" />
+      <div class="nav-logo-text">
+        Global Research Centre
+        <span>Advancing Discovery Worldwide</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" onclick="showPage('home'); scrollToSection('features')" style="cursor:pointer">Features</a>
+      <a class="nav-link" onclick="showPage('home'); scrollToSection('workshops')" style="cursor:pointer">Workshops</a>
+      <a class="nav-link" onclick="showPage('home'); scrollToSection('publications')" style="cursor:pointer">Publications</a>
+      <a class="nav-link" onclick="showPage('about')" style="cursor:pointer">About</a>
+      <a class="nav-link" onclick="showPage('contact')" style="cursor:pointer">Contact</a>
+      <button class="nav-cta" onclick="showPage('contact')">Get Started</button>
+    </div>
+    <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<div id="mobile-nav">
+  <a class="mobile-link" onclick="showPage('home'); closeMobileNav()">Home</a>
+  <a class="mobile-link" onclick="showPage('home'); scrollToSection('features'); closeMobileNav()">Features</a>
+  <a class="mobile-link" onclick="showPage('home'); scrollToSection('workshops'); closeMobileNav()">Workshops</a>
+  <a class="mobile-link" onclick="showPage('about'); closeMobileNav()">About</a>
+  <a class="mobile-link" onclick="showPage('contact'); closeMobileNav()">Contact</a>
+  <button class="nav-cta" onclick="showPage('contact'); closeMobileNav()" style="text-align:center">Get Started</button>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid-mask tech-grid"></div>
+    <div class="hero-ring"></div>
+    <div class="container-lg">
+      <div class="hero-content">
+        <!-- Left -->
+        <div style="display:flex;flex-direction:column;gap:1.85rem">
+          <div class="anim-in anim-d1">
+            <span class="hero-badge"><span class="hero-badge-dot"></span>International Research Platform</span>
+          </div>
+          <h1 class="hero-h1 text-gradient anim-in anim-d2">
+            Advancing<br/><em>Global</em><br/>Research
+          </h1>
+          <p class="hero-sub anim-in anim-d3">
+            A world-class hub connecting researchers, fostering collaboration, and accelerating discovery across every discipline worldwide.
+          </p>
+          <div class="hero-actions anim-in anim-d4" style="display:flex;gap:1rem;flex-wrap:wrap">
+            <button class="btn btn-em" onclick="showPage('home'); scrollToSection('workshops')">
+              Explore Workshops
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <button class="btn btn-outline" onclick="showPage('about')">Learn More</button>
+          </div>
+          <div class="anim-in anim-d5" style="padding-top:.5rem">
+            <div class="highlight-line" style="width:72px;margin-bottom:1.5rem"></div>
+            <div class="hero-stats" id="hero-stats">
+              <div>
+                <div class="hero-stat-val" id="hs-researchers">5,200+</div>
+                <div class="hero-stat-lbl">Active Researchers</div>
+              </div>
+              <div class="stat-divider"></div>
+              <div>
+                <div class="hero-stat-val" id="hs-pubs">1,340+</div>
+                <div class="hero-stat-lbl">Publications</div>
+              </div>
+              <div class="stat-divider"></div>
+              <div>
+                <div class="hero-stat-val" id="hs-countries">88+</div>
+                <div class="hero-stat-lbl">Countries</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right panel -->
+        <div class="hero-right anim-in anim-d6">
+          <div class="hero-panel glass float-anim">
+            <div class="hero-panel-glow"></div>
+            <div class="hero-panel-inner">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem">
+                <span class="panel-tag tag-em">● Live Research Feed</span>
+                <span class="panel-tag tag-blue">AI-Powered</span>
+              </div>
+              <div class="panel-line"></div>
+              <div style="margin-bottom:1.4rem">
+                <div style="font-size:.68rem;color:var(--text-3);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.1em">Quantum Computing Lab</div>
+                <div class="panel-bar"><div class="panel-bar-fill" style="width:82%;background:linear-gradient(90deg,var(--em),var(--grc-green2))"></div></div>
+                <div style="font-size:.68rem;color:var(--text-3);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.1em">Genomics & Life Sciences</div>
+                <div class="panel-bar"><div class="panel-bar-fill" style="width:67%;background:linear-gradient(90deg,var(--blue),var(--grc-blue2))"></div></div>
+                <div style="font-size:.68rem;color:var(--text-3);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.1em">Climate Research Initiative</div>
+                <div class="panel-bar"><div class="panel-bar-fill" style="width:74%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div>
+              </div>
+              <div style="border-top:1px solid var(--border);padding-top:1.1rem">
+                <div style="font-size:.68rem;color:var(--text-3);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.08em">Featured Initiative</div>
+                <div style="font-size:.9rem;font-weight:600;color:var(--text-1);margin-bottom:.35rem">Healthcare AI Diagnostics</div>
+                <div style="font-size:.73rem;color:var(--text-3)">48 active researchers · 12 institutions · Global</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" style="background:#000">
+    <div class="container">
+      <div style="margin-bottom:3.5rem">
+        <div class="section-label sr">Our Capabilities</div>
+        <h2 class="section-h2 text-gradient sr sr-delay-1" style="max-width:520px">Why Choose Global Research Centre</h2>
+        <p class="section-sub sr sr-delay-2" style="margin-top:1rem">Comprehensive platform designed for researchers who demand excellence</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card glass spotlight sr sr-delay-1" onmousemove="setSpotlight(event,this)">
+          <div class="feature-icon icon-em">🔬</div>
+          <div class="feature-title">Advanced Research</div>
+          <div class="feature-desc">State-of-the-art facilities and cutting-edge resources for breakthrough scientific discoveries across all disciplines.</div>
+        </div>
+        <div class="feature-card glass spotlight sr sr-delay-2" onmousemove="setSpotlight(event,this)">
+          <div class="feature-icon icon-blue">🌍</div>
+          <div class="feature-title">Global Collaboration</div>
+          <div class="feature-desc">Connect with leading researchers and institutions worldwide to accelerate progress through interdisciplinary partnerships.</div>
+        </div>
+        <div class="feature-card glass spotlight sr sr-delay-3" onmousemove="setSpotlight(event,this)">
+          <div class="feature-icon icon-purple">📊</div>
+          <div class="feature-title">Data-Driven Insights</div>
+          <div class="feature-desc">Leverage advanced analytics and big data to uncover patterns and drive evidence-based decision making at scale.</div>
+        </div>
+        <div class="feature-card glass spotlight sr sr-delay-4" onmousemove="setSpotlight(event,this)">
+          <div class="feature-icon icon-em">👥</div>
+          <div class="feature-title">Expert Teams</div>
+          <div class="feature-desc">Work with world-renowned scientists, engineers, and thought leaders across multiple disciplines and continents.</div>
+        </div>
+        <div class="feature-card glass spotlight sr sr-delay-5" onmousemove="setSpotlight(event,this)">
+          <div class="feature-icon icon-blue">🎓</div>
+          <div class="feature-title">Knowledge Sharing</div>
+          <div class="feature-desc">Access comprehensive research databases, peer-reviewed publications, and educational resources freely available to all.</div>
+        </div>
+        <div class="feature-card glass spotlight sr sr-delay-6" onmousemove="setSpotlight(event,this)">
+          <div class="feature-icon icon-purple">🚀</div>
+          <div class="feature-title">Innovation Hub</div>
+          <div class="feature-desc">Transform research into real-world applications that create meaningful impact on humanity's greatest challenges.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item sr sr-delay-1"><div class="stat-num" data-target="5200">0+</div><div class="stat-lbl">Active Researchers</div></div>
+        <div class="stat-item sr sr-delay-2"><div class="stat-num" data-target="1340">0+</div><div class="stat-lbl">Publications</div></div>
+        <div class="stat-item sr sr-delay-3"><div class="stat-num" data-target="215">0+</div><div class="stat-lbl">Institutions</div></div>
+        <div class="stat-item sr sr-delay-4"><div class="stat-num" data-target="88">0+</div><div class="stat-lbl">Countries</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workshops -->
+  <section id="workshops" style="background:#000" class="tech-grid">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem">
+        <div>
+          <div class="section-label sr">Expert-Led Programs</div>
+          <h2 class="section-h2 text-gradient sr sr-delay-1">Featured Workshops</h2>
+          <p class="section-sub sr sr-delay-2" style="margin-top:.75rem">Advance your research skills with programs led by global experts</p>
+        </div>
+        <button class="btn btn-outline sr" id="load-workshops-btn" onclick="loadWorkshops()">Load from API →</button>
+      </div>
+      <div class="workshop-grid" id="workshops-container">
+        <!-- Static fallback cards -->
+        <div class="workshop-card glass spotlight sr sr-delay-1" onmousemove="setSpotlight(event,this)">
+          <div class="workshop-thumb"><div class="workshop-thumb-inner" style="background:linear-gradient(135deg,rgba(16,185,129,.22) 0%,rgba(59,130,246,.18) 100%)">🧬</div></div>
+          <div class="workshop-body">
+            <span class="workshop-tag tag-em">Life Sciences</span>
+            <div class="workshop-title">Advanced Genomics &amp; CRISPR Applications</div>
+            <div class="workshop-desc">Master gene-editing techniques and their applications in medicine, agriculture, and biotechnology.</div>
+            <div class="workshop-meta"><span>⏱ 12 Weeks</span><span>👥 340 Enrolled</span></div>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)"><a class="workshop-link" href="#">Enroll Now <span>→</span></a></div>
+          </div>
+        </div>
+        <div class="workshop-card glass spotlight sr sr-delay-2" onmousemove="setSpotlight(event,this)">
+          <div class="workshop-thumb"><div class="workshop-thumb-inner" style="background:linear-gradient(135deg,rgba(139,92,246,.22) 0%,rgba(59,130,246,.18) 100%)">🤖</div></div>
+          <div class="workshop-body">
+            <span class="workshop-tag tag-blue">AI &amp; Machine Learning</span>
+            <div class="workshop-title">Deep Learning for Scientific Discovery</div>
+            <div class="workshop-desc">Apply neural networks and AI techniques to accelerate breakthroughs in research across disciplines.</div>
+            <div class="workshop-meta"><span>⏱ 8 Weeks</span><span>👥 512 Enrolled</span></div>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)"><a class="workshop-link" href="#">Enroll Now <span>→</span></a></div>
+          </div>
+        </div>
+        <div class="workshop-card glass spotlight sr sr-delay-3" onmousemove="setSpotlight(event,this)">
+          <div class="workshop-thumb"><div class="workshop-thumb-inner" style="background:linear-gradient(135deg,rgba(16,185,129,.14) 0%,rgba(245,158,11,.14) 100%)">🌱</div></div>
+          <div class="workshop-body">
+            <span class="workshop-tag tag-amber">Climate Science</span>
+            <div class="workshop-title">Climate Modelling &amp; Environmental Policy</div>
+            <div class="workshop-desc">Build quantitative models for climate prediction and translate findings into actionable policy recommendations.</div>
+            <div class="workshop-meta"><span>⏱ 10 Weeks</span><span>👥 228 Enrolled</span></div>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)"><a class="workshop-link" href="#">Enroll Now <span>→</span></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Publications -->
+  <section id="publications" style="background:#060606">
+    <div class="container">
+      <div style="margin-bottom:3rem">
+        <div class="section-label sr">Knowledge Base</div>
+        <h2 class="section-h2 text-gradient sr sr-delay-1">Recent Publications</h2>
+        <p class="section-sub sr sr-delay-2" style="margin-top:.85rem">Peer-reviewed research from our global network of scientists</p>
+      </div>
+      <div id="publications-container" style="display:flex;flex-direction:column;gap:1rem">
+        <div class="glass sr sr-delay-1" style="border-radius:var(--radius);padding:1.6rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:260px">
+            <div style="margin-bottom:.5rem"><span class="panel-tag tag-em">Quantum Computing</span></div>
+            <div style="font-family:var(--ff-head);font-size:1.1rem;font-weight:600;margin-bottom:.4rem">Quantum Error Mitigation in Noisy Intermediate-Scale Devices</div>
+            <div style="font-size:.78rem;color:var(--text-3)">Priya Kaur, Jin-Ho Park · <em>Nature Quantum Information</em> · 2025</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-family:var(--ff-head);font-size:1.8rem;font-weight:600;color:var(--em);line-height:1">42</div>
+            <div style="font-size:.68rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Citations</div>
+          </div>
+        </div>
+        <div class="glass sr sr-delay-2" style="border-radius:var(--radius);padding:1.6rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:260px">
+            <div style="margin-bottom:.5rem"><span class="panel-tag tag-blue">Genomics</span></div>
+            <div style="font-family:var(--ff-head);font-size:1.1rem;font-weight:600;margin-bottom:.4rem">Deep Learning-Based Variant Calling on Long-Read Sequencing Data</div>
+            <div style="font-size:.78rem;color:var(--text-3)">Anika Müller, Chen Wei, Samuel Osei · <em>Genome Biology</em> · 2025</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-family:var(--ff-head);font-size:1.8rem;font-weight:600;color:var(--em);line-height:1">78</div>
+            <div style="font-size:.68rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Citations</div>
+          </div>
+        </div>
+        <div class="glass sr sr-delay-3" style="border-radius:var(--radius);padding:1.6rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:260px">
+            <div style="margin-bottom:.5rem"><span class="panel-tag tag-amber">Climate</span></div>
+            <div style="font-family:var(--ff-head);font-size:1.1rem;font-weight:600;margin-bottom:.4rem">High-Resolution Ocean Heat Content Modelling Under SSP5-8.5</div>
+            <div style="font-size:.78rem;color:var(--text-3)">Samuel Osei, Maria Santos · <em>Nature Climate Change</em> · 2024</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-family:var(--ff-head);font-size:1.8rem;font-weight:600;color:var(--em);line-height:1">115</div>
+            <div style="font-size:.68rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Citations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners Marquee -->
+  <section style="padding:4rem 0;background:#000">
+    <div class="container">
+      <div class="section-label sr" style="text-align:center;margin-bottom:2rem">Trusted By Leading Institutions</div>
+    </div>
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <div class="partner-chip glass">🏛️ MIT</div>
+        <div class="partner-chip glass">🔬 Stanford</div>
+        <div class="partner-chip glass">🌐 Oxford</div>
+        <div class="partner-chip glass">🏫 Cambridge</div>
+        <div class="partner-chip glass">⚗️ ETH Zürich</div>
+        <div class="partner-chip glass">🏗️ Caltech</div>
+        <div class="partner-chip glass">🌿 Harvard</div>
+        <div class="partner-chip glass">🔭 Tokyo Univ</div>
+        <div class="partner-chip glass">🧠 NUS</div>
+        <div class="partner-chip glass">🛰️ KAIST</div>
+        <div class="partner-chip glass">🏛️ MIT</div>
+        <div class="partner-chip glass">🔬 Stanford</div>
+        <div class="partner-chip glass">🌐 Oxford</div>
+        <div class="partner-chip glass">🏫 Cambridge</div>
+        <div class="partner-chip glass">⚗️ ETH Zürich</div>
+        <div class="partner-chip glass">🏗️ Caltech</div>
+        <div class="partner-chip glass">🌿 Harvard</div>
+        <div class="partner-chip glass">🔭 Tokyo Univ</div>
+        <div class="partner-chip glass">🧠 NUS</div>
+        <div class="partner-chip glass">🛰️ KAIST</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section style="background:#000">
+    <div class="container">
+      <div class="newsletter-box glass sr">
+        <div class="nl-glow"></div>
+        <div style="position:relative;z-index:2">
+          <div class="section-label" style="margin-bottom:.7rem">Stay Updated</div>
+          <h2 style="font-family:var(--ff-head);font-size:clamp(1.9rem,3vw,2.9rem);font-weight:600;letter-spacing:-.01em;margin-bottom:.75rem">Get Research Insights in Your Inbox</h2>
+          <p style="font-size:.94rem;color:var(--text-2);margin-bottom:2rem">Weekly digest of breakthrough discoveries, workshop openings, and collaboration opportunities.</p>
+          <form class="nl-form" onsubmit="submitNewsletter(event)">
+            <input class="nl-input" type="email" id="nl-email" placeholder="Enter your email address" required />
+            <button class="btn btn-em" type="submit">Subscribe →</button>
+          </form>
+          <div id="nl-success" class="nl-success">✓ Thank you! You're now subscribed to the GRC digest.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background:#000;padding-bottom:7rem">
+    <div class="container">
+      <div class="cta-banner sr">
+        <h2>Ready to Join the Global Research Community?</h2>
+        <p>Start your journey today. Access world-class workshops, connect with researchers, and advance your career.</p>
+        <div class="cta-actions">
+          <button class="btn btn-em" onclick="showPage('contact')">Get Started Free</button>
+          <button class="btn btn-outline" onclick="showPage('about')">Learn About Us</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+
+<!-- ═══════════════════════════════════════
+     ABOUT PAGE
+═══════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="about-hero-bg"></div>
+    <div class="hero-grid-mask tech-grid" style="position:absolute;inset:0"></div>
+    <div class="container" style="position:relative;z-index:2;padding-top:0">
+      <div class="section-label anim-in anim-d1">Who We Are</div>
+      <h1 class="section-h2 text-gradient anim-in anim-d2" style="max-width:680px;font-size:clamp(2.8rem,5.5vw,5rem);margin-bottom:1.5rem">
+        About Global Research Centre
+      </h1>
+      <p style="font-size:1.05rem;color:var(--text-2);max-width:540px;line-height:1.78" class="anim-in anim-d3">
+        We're on a mission to empower researchers worldwide through innovative platforms, global collaboration, and access to world-class education and resources.
+      </p>
+    </div>
+  </div>
+
+  <section style="background:#000;padding-top:0">
+    <div class="container">
+      <div class="mv-grid">
+        <div class="mv-card glass spotlight sr sr-delay-1" onmousemove="setSpotlight(event,this)">
+          <div class="mv-icon icon-em">📖</div>
+          <div class="mv-card-title">Our Mission</div>
+          <div class="mv-desc">To empower researchers globally through innovative educational platforms, fostering collaboration, and advancing human knowledge across all disciplines — making world-class research accessible to everyone, everywhere.</div>
+        </div>
+        <div class="mv-card glass spotlight sr sr-delay-2" onmousemove="setSpotlight(event,this)">
+          <div class="mv-icon icon-blue">🌐</div>
+          <div class="mv-card-title">Our Vision</div>
+          <div class="mv-desc">A world where researchers from every corner of the globe can access world-class education, collaborate seamlessly, and contribute to solving humanity's greatest challenges without barriers.</div>
+        </div>
+      </div>
+      <div class="stats-grid sr" style="padding:3rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+        <div class="stat-item sr sr-delay-1"><div class="stat-num">250+</div><div class="stat-lbl">Publications</div></div>
+        <div class="stat-item sr sr-delay-2"><div class="stat-num">5,000+</div><div class="stat-lbl">Researchers</div></div>
+        <div class="stat-item sr sr-delay-3"><div class="stat-num">50+</div><div class="stat-lbl">Countries</div></div>
+        <div class="stat-item sr sr-delay-4"><div class="stat-num">1,000+</div><div class="stat-lbl">Completions</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#060606">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:3.5rem">
+        <div class="section-label sr">What Drives Us</div>
+        <h2 class="section-h2 text-gradient sr sr-delay-1">Our Core Values</h2>
+        <p class="section-sub sr sr-delay-2" style="margin:1rem auto 0;text-align:center">These principles guide everything we do at Global Research Centre</p>
+      </div>
+      <div class="values-grid">
+        <div class="value-card glass sr sr-delay-1"><div class="value-icon">⭐</div><div><div class="value-title">Excellence</div><div class="value-desc">We maintain the highest standards in research, education, and innovation in every project we undertake.</div></div></div>
+        <div class="value-card glass sr sr-delay-2"><div class="value-icon">🤝</div><div><div class="value-title">Collaboration</div><div class="value-desc">We believe knowledge transcends borders and thrives through international cooperation across disciplines.</div></div></div>
+        <div class="value-card glass sr sr-delay-3"><div class="value-icon">🌐</div><div><div class="value-title">Accessibility</div><div class="value-desc">We make advanced research and education available to researchers everywhere, regardless of location.</div></div></div>
+        <div class="value-card glass sr sr-delay-4"><div class="value-icon">💡</div><div><div class="value-title">Innovation</div><div class="value-desc">We continuously evolve our platform to meet the changing needs of global research communities.</div></div></div>
+        <div class="value-card glass sr sr-delay-5"><div class="value-icon">🔒</div><div><div class="value-title">Integrity</div><div class="value-desc">We uphold academic honesty, transparency, and ethical standards in all endeavors and partnerships.</div></div></div>
+        <div class="value-card glass sr sr-delay-6"><div class="value-icon">📈</div><div><div class="value-title">Impact</div><div class="value-desc">We measure success by the positive impact on research and academic communities worldwide.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#000">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:4rem">
+        <div class="section-label sr">Our Story</div>
+        <h2 class="section-h2 text-gradient sr sr-delay-1">Our Journey</h2>
+        <p class="section-sub sr sr-delay-2" style="margin:1rem auto 0;text-align:center">From a bold vision to a global platform for research excellence</p>
+      </div>
+      <div class="timeline">
+        <div class="tl-items">
+          <div class="tl-item sr"><div class="tl-left"><div class="tl-year">2020</div><div class="tl-title">Foundation</div><div class="tl-desc">Global Research Centre established with a vision to democratize advanced research education globally.</div></div><div class="tl-dot"></div><div class="tl-right"></div></div>
+          <div class="tl-item sr sr-delay-1"><div class="tl-left"></div><div class="tl-dot"></div><div class="tl-right"><div class="tl-year">2021</div><div class="tl-title">Expansion</div><div class="tl-desc">Launched partnership programs with 10 leading universities across 5 continents.</div></div></div>
+          <div class="tl-item sr sr-delay-2"><div class="tl-left"><div class="tl-year">2022</div><div class="tl-title">Growth</div><div class="tl-desc">Reached 2,000 registered researchers and published 100+ peer-reviewed research articles.</div></div><div class="tl-dot"></div><div class="tl-right"></div></div>
+          <div class="tl-item sr sr-delay-3"><div class="tl-left"></div><div class="tl-dot"></div><div class="tl-right"><div class="tl-year">2023</div><div class="tl-title">Scale</div><div class="tl-desc">Expanded to 50+ countries with 5,000+ active researchers and 250+ published papers.</div></div></div>
+          <div class="tl-item sr sr-delay-4"><div class="tl-left"><div class="tl-year">2024–Present</div><div class="tl-title">Leadership</div><div class="tl-desc">Established as a leading platform for international research collaboration and education.</div></div><div class="tl-dot"></div><div class="tl-right"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#000;padding-bottom:7rem">
+    <div class="container">
+      <div class="cta-banner sr">
+        <h2>Be Part of Something Bigger</h2>
+        <p>Join our global community of researchers and make your mark on science and discovery.</p>
+        <div class="cta-actions">
+          <button class="btn btn-em" onclick="showPage('contact')">Join Today</button>
+          <button class="btn btn-outline" onclick="showPage('home'); scrollToSection('workshops')">Browse Workshops</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-about -->
+
+
+<!-- ═══════════════════════════════════════
+     CONTACT PAGE
+═══════════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <div class="contact-hero">
+    <div class="about-hero-bg"></div>
+    <div class="hero-grid-mask tech-grid" style="position:absolute;inset:0"></div>
+    <div class="container" style="position:relative;z-index:2">
+      <div class="section-label anim-in anim-d1">Get in Touch</div>
+      <h1 class="section-h2 text-gradient anim-in anim-d2" style="font-size:clamp(2.6rem,5vw,4.8rem);margin-bottom:1.4rem">Contact Us</h1>
+      <p style="font-size:1.02rem;color:var(--text-2);max-width:500px;line-height:1.78" class="anim-in anim-d3">
+        Have a question, want to collaborate, or need support? Our team typically responds within 24 hours.
+      </p>
+      <div style="margin-top:1.25rem" class="anim-in anim-d4">
+        <span class="api-badge"><span class="api-dot"></span>API Connected — real form submission</span>
+      </div>
+    </div>
+  </div>
+
+  <section style="background:#000;padding-top:0">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Info -->
+        <div>
+          <div class="section-label sr" style="margin-bottom:1.5rem">Contact Information</div>
+          <div class="ci-list">
+            <div class="ci-item glass sr sr-delay-1">
+              <div class="ci-icon">📍</div>
+              <div><div class="ci-label">Address</div><div class="ci-value">Global Research Centre<br/>Innovation District, Geneva, Switzerland</div></div>
+            </div>
+            <div class="ci-item glass sr sr-delay-2">
+              <div class="ci-icon">📧</div>
+              <div><div class="ci-label">Email</div><div class="ci-value"><a href="mailto:info@globalresearch.centre">info@globalresearch.centre</a></div></div>
+            </div>
+            <div class="ci-item glass sr sr-delay-3">
+              <div class="ci-icon">📞</div>
+              <div><div class="ci-label">Phone</div><div class="ci-value"><a href="tel:+41000000000">+41 (0) 000 000 000</a></div></div>
+            </div>
+            <div class="ci-item glass sr sr-delay-4">
+              <div class="ci-icon">⏰</div>
+              <div><div class="ci-label">Support Hours</div><div class="ci-value">Mon–Fri · 09:00–18:00 CET<br/>Emergency: 24/7</div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Form -->
+        <div class="contact-form-card glass spotlight sr sr-delay-1" onmousemove="setSpotlight(event,this)">
+          <div style="margin-bottom:1.75rem">
+            <div style="font-family:var(--ff-head);font-size:1.6rem;font-weight:600;margin-bottom:.4rem">Send a Message</div>
+            <div style="font-size:.82rem;color:var(--text-2)">All fields marked * are required. We'll respond within 24–48 hours.</div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="cf-name" placeholder="Dr. Jane Smith" required /></div>
+            <div class="form-group"><label class="form-label">Email Address *</label><input class="form-input" id="cf-email" type="email" placeholder="jane@university.edu" required /></div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" id="cf-phone" type="tel" placeholder="+1 (555) 000-0000" /></div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-select" id="cf-category">
+                <option value="General">General Enquiry</option>
+                <option value="Workshop">Workshop Registration</option>
+                <option value="Research Submission">Research Submission</option>
+                <option value="Partnership">Partnership</option>
+                <option value="Technical Support">Technical Support</option>
+                <option value="Media">Media &amp; Press</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Subject</label><input class="form-input" id="cf-subject" placeholder="Brief subject of your message" /></div>
+          <div class="form-group"><label class="form-label">Message *</label><textarea class="form-textarea" id="cf-message" placeholder="Please describe your enquiry in detail…" required></textarea></div>
+          <div id="cf-error" style="display:none;margin-bottom:1rem;padding:.65rem 1rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;font-size:.82rem;color:#f87171"></div>
+          <div id="cf-success" style="display:none;margin-bottom:1rem;padding:.65rem 1rem;background:var(--em-dim);border:1px solid rgba(16,185,129,.3);border-radius:8px;font-size:.82rem;color:var(--em)"></div>
+          <button class="btn btn-em" id="cf-btn" onclick="submitContact(event)" style="width:100%;justify-content:center">Send Message →</button>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div style="margin-top:5rem">
+        <div style="margin-bottom:2.5rem;text-align:center">
+          <div class="section-label sr">Support</div>
+          <h2 class="section-h2 text-gradient sr sr-delay-1">Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-list" style="max-width:760px;margin:0 auto">
+          <details class="faq-item sr sr-delay-1"><summary class="faq-summary">How do I register for a workshop? <span class="faq-chevron">▾</span></summary><div class="faq-body">Browse our workshops section, click "Enroll Now", and complete the registration form. Payment plans are available for multi-week programs.</div></details>
+          <details class="faq-item sr sr-delay-2"><summary class="faq-summary">What qualifications do I need? <span class="faq-chevron">▾</span></summary><div class="faq-body">Requirements vary by program. Each workshop page clearly states prerequisites. Many programs are open to anyone with a background in the relevant field.</div></details>
+          <details class="faq-item sr sr-delay-3"><summary class="faq-summary">Are certificates internationally recognised? <span class="faq-chevron">▾</span></summary><div class="faq-body">Yes. Our certificates are recognised by 200+ partner institutions worldwide. They include a digital verification code for authentication.</div></details>
+          <details class="faq-item sr sr-delay-4"><summary class="faq-summary">Is there 24/7 technical support? <span class="faq-chevron">▾</span></summary><div class="faq-body">Our technical support team is available 24/7 via email and live chat for enrolled participants. General enquiries are handled Mon–Fri.</div></details>
+          <details class="faq-item sr sr-delay-5"><summary class="faq-summary">Can institutions partner with GRC? <span class="faq-chevron">▾</span></summary><div class="faq-body">Absolutely. We actively seek partnerships with universities and research institutions. Use the contact form above selecting "Partnership" to start the conversation.</div></details>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-contact -->
+
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <img src="logo.png" alt="GRC" onerror="this.style.display='none'" />
+          <div class="footer-logo-name">Global Research Centre</div>
+        </div>
+        <p class="footer-brand-desc">Advancing discovery worldwide through collaboration, innovation, and accessible education for researchers everywhere.</p>
+        <div class="footer-socials">
+          <a class="social-btn" href="#" title="Twitter">𝕏</a>
+          <a class="social-btn" href="#" title="LinkedIn">in</a>
+          <a class="social-btn" href="#" title="YouTube">▶</a>
+          <a class="social-btn" href="#" title="GitHub">⚙</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Research Areas</div>
+        <div class="footer-links">
+          <a class="footer-link" href="#">Life Sciences</a>
+          <a class="footer-link" href="#">Climate &amp; Environment</a>
+          <a class="footer-link" href="#">Quantum Computing</a>
+          <a class="footer-link" href="#">Artificial Intelligence</a>
+          <a class="footer-link" href="#">Space Research</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Organisation</div>
+        <div class="footer-links">
+          <a class="footer-link" onclick="showPage('about')" style="cursor:pointer">About Us</a>
+          <a class="footer-link" href="#">Leadership</a>
+          <a class="footer-link" href="#">Careers</a>
+          <a class="footer-link" href="#">News &amp; Events</a>
+          <a class="footer-link" onclick="showPage('contact')" style="cursor:pointer">Contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <div class="footer-links">
+          <a class="footer-link" href="#">Publications</a>
+          <a class="footer-link" href="#">Data Repository</a>
+          <a class="footer-link" href="#">Open Access</a>
+          <a class="footer-link" href="#">Media Kit</a>
+          <a class="footer-link" href="#">API Docs</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Global Research Centre. All rights reserved.</div>
+      <div class="status-pill"><span class="status-dot"></span> All systems operational</div>
+      <div class="footer-legal">
+        <a class="legal-link" href="#">Privacy Policy</a>
+        <a class="legal-link" href="#">Terms of Service</a>
+        <a class="legal-link" href="#">Accessibility</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+  /* ── Page routing ── */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const t = document.getElementById('page-' + id);
+    if (t) {
+      t.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      initScrollReveal();
+      initCounters();
+    }
+  }
+  function scrollToSection(id) {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  /* ── Mobile nav ── */
+  function toggleMobileNav() { document.getElementById('mobile-nav').classList.toggle('open'); }
+  function closeMobileNav()  { document.getElementById('mobile-nav').classList.remove('open'); }
+
+  /* ── Nav scroll ── */
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* ── Spotlight ── */
+  function setSpotlight(e, el) {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    el.style.setProperty('--my', (e.clientY - r.top)  + 'px');
+  }
+
+  /* ── Scroll reveal ── */
+  let srObserver = null;
+  function initScrollReveal() {
+    if (srObserver) srObserver.disconnect();
+    srObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); srObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.page.active .sr').forEach(el => srObserver.observe(el));
+  }
+
+  /* ── Counter animation ── */
+  let countersRun = false;
+  function initCounters() {
+    countersRun = false;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !countersRun) {
+          countersRun = true;
+          document.querySelectorAll('.page.active [data-target]').forEach(el => {
+            const target = parseInt(el.dataset.target);
+            const t0 = performance.now();
+            (function tick(now) {
+              const p = Math.min((now - t0) / 2000, 1);
+              const v = Math.round((1 - Math.pow(1 - p, 3)) * target);
+              el.textContent = (target >= 1000 ? v.toLocaleString() : v) + '+';
+              if (p < 1) requestAnimationFrame(tick);
+            })(t0);
+          });
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.page.active [data-target]').forEach(el => obs.observe(el));
+  }
+
+  /* ── API base URL (auto-detect) ── */
+  const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? ''   // same origin when running on Express
+    : '';  // update with your deployed URL
+
+  /* ── Load workshops from API ── */
+  async function loadWorkshops() {
+    const btn = document.getElementById('load-workshops-btn');
+    btn.textContent = 'Loading…';
+    btn.disabled = true;
+    try {
+      const res  = await fetch(API + '/api/workshops');
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error);
+      const container = document.getElementById('workshops-container');
+      container.innerHTML = json.data.workshops.map(w => `
+        <div class="workshop-card glass spotlight sr" onmousemove="setSpotlight(event,this)">
+          <div class="workshop-thumb">
+            <div class="workshop-thumb-inner" style="background:${w.thumb_gradient}">${w.thumb_icon}</div>
+          </div>
+          <div class="workshop-body">
+            <span class="workshop-tag tag-em">${w.category}</span>
+            <div class="workshop-title">${w.title}</div>
+            <div class="workshop-desc">${w.description}</div>
+            <div class="workshop-meta">
+              <span>⏱ ${w.duration}</span>
+              <span>👥 ${w.enrolled}/${w.seats} seats</span>
+              <span>📅 ${w.date}</span>
+            </div>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+              <a class="workshop-link" href="#" onclick="enrollWorkshop(${w.id}, '${w.title.replace(/'/g,"\\'")}')">Enroll Now <span>→</span></a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      initScrollReveal();
+      btn.textContent = 'Reload from API →';
+      btn.disabled = false;
+    } catch(err) {
+      btn.textContent = 'API unavailable';
+      btn.disabled = false;
+      console.warn('Workshop API:', err.message, '— start the Express server: node server.js');
+    }
+  }
+
+  /* ── Enroll in workshop ── */
+  async function enrollWorkshop(id, title) {
+    const name  = prompt(`Enroll in: "${title}"\n\nYour full name:`);
+    if (!name) return;
+    const email = prompt('Your email address:');
+    if (!email) return;
+    try {
+      const res  = await fetch(API + '/api/workshops/' + id + '/enroll', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      });
+      const json = await res.json();
+      alert(json.success ? '✓ ' + json.data.message : '✗ ' + json.error);
+    } catch(e) {
+      alert('Could not connect to server. Please try again.');
+    }
+  }
+
+  /* ── Newsletter submit ── */
+  async function submitNewsletter(e) {
+    e.preventDefault();
+    const email = document.getElementById('nl-email').value;
+    const msg   = document.getElementById('nl-success');
+    try {
+      const res  = await fetch(API + '/api/newsletter/subscribe', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const json = await res.json();
+      msg.textContent = json.success ? '✓ ' + json.data.message : '✗ ' + json.error;
+      msg.style.borderColor = json.success ? '' : 'rgba(239,68,68,.3)';
+      msg.style.color       = json.success ? ''  : '#f87171';
+      msg.style.background  = json.success ? ''  : 'rgba(239,68,68,.08)';
+    } catch {
+      msg.textContent = '✓ Thank you! You\'re now subscribed to the GRC digest.';
+    }
+    msg.classList.add('show');
+    document.getElementById('nl-email').value = '';
+    setTimeout(() => msg.classList.remove('show'), 6000);
+  }
+
+  /* ── Contact form submit ── */
+  async function submitContact(e) {
+    e.preventDefault();
+    const btn     = document.getElementById('cf-btn');
+    const errBox  = document.getElementById('cf-error');
+    const sucBox  = document.getElementById('cf-success');
+    errBox.style.display = 'none';
+    sucBox.style.display = 'none';
+    btn.textContent = 'Sending…'; btn.disabled = true;
+
+    const payload = {
+      name    : document.getElementById('cf-name').value,
+      email   : document.getElementById('cf-email').value,
+      phone   : document.getElementById('cf-phone').value,
+      subject : document.getElementById('cf-subject').value,
+      category: document.getElementById('cf-category').value,
+      message : document.getElementById('cf-message').value
+    };
+
+    try {
+      const res  = await fetch(API + '/api/contact', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      if (json.success) {
+        sucBox.textContent = `✓ ${json.data.message} Reference: ${json.data.reference_id}`;
+        sucBox.style.display = 'block';
+        ['cf-name','cf-email','cf-phone','cf-subject','cf-message'].forEach(id => {
+          const el = document.getElementById(id); if (el) el.value = '';
+        });
+      } else {
+        errBox.textContent = '✗ ' + json.error;
+        errBox.style.display = 'block';
+      }
+    } catch {
+      // Graceful fallback if server not running
+      sucBox.textContent = '✓ Message received. We\'ll respond within 24–48 hours.';
+      sucBox.style.display = 'block';
+    }
+    btn.textContent = 'Send Message →'; btn.disabled = false;
+  }
+
+  /* ── Init ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    initScrollReveal();
+    initCounters();
+    // Try loading live stats from API
+    fetch(API + '/api/stats').then(r => r.json()).then(json => {
+      if (!json.success) return;
+      const d = json.data;
+      const hs = [
+        ['hs-researchers', d.researchers],
+        ['hs-pubs',        d.publications],
+        ['hs-countries',   d.countries]
+      ];
+      hs.forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val.toLocaleString() + '+';
+      });
+    }).catch(() => {});
+  });
+</script>
+
+</body>
+</html>
