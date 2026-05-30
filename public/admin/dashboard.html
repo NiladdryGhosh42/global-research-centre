@@ -13,13 +13,13 @@
     <div class="w-72 bg-white h-screen shadow-xl fixed">
       <div class="p-8 border-b">
         <h1 class="text-3xl font-bold text-gray-900">GRC</h1>
-        <p class="text-blue-600 text-sm">Global Research Centre</p>
+        <p class="text-blue-600">Global Research Centre</p>
       </div>
-      <nav class="p-6">
-        <a href="#" onclick="showSection('workshops')" class="flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-blue-50 text-gray-700 font-medium active">
+      <nav class="p-6 space-y-2">
+        <a href="#" onclick="showSection('workshops')" class="flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-blue-50 active">
           <i class="fas fa-chalkboard-teacher text-xl"></i> Workshops
         </a>
-        <a href="#" onclick="showSection('publications')" class="flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-blue-50 text-gray-700 font-medium">
+        <a href="#" onclick="showSection('publications')" class="flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-blue-50">
           <i class="fas fa-book text-xl"></i> Publications
         </a>
       </nav>
@@ -34,18 +34,18 @@
         </button>
       </div>
 
-      <!-- Workshops -->
+      <!-- Workshops Section -->
       <div id="workshopsSection">
-        <button onclick="showAddWorkshopForm()" 
+        <button onclick="showAddWorkshopModal()" 
                 class="mb-8 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 text-lg font-medium">
           <i class="fas fa-plus"></i> Add New Workshop
         </button>
         <div id="workshopsList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
       </div>
 
-      <!-- Publications -->
+      <!-- Publications Section -->
       <div id="publicationsSection" class="hidden">
-        <button onclick="showAddPublicationForm()" 
+        <button onclick="showAddPublicationModal()" 
                 class="mb-8 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 text-lg font-medium">
           <i class="fas fa-plus"></i> Add New Publication
         </button>
@@ -55,6 +55,46 @@
   </div>
 
   <script>
+    async function loadWorkshops() {
+      const res = await fetch('/api/workshops');
+      const data = await res.json();
+      const container = document.getElementById('workshopsList');
+      container.innerHTML = '';
+
+      if (data.data.workshops?.length > 0) {
+        data.data.workshops.forEach(w => {
+          container.innerHTML += `
+            <div class="bg-white p-6 rounded-3xl shadow hover:shadow-xl transition">
+              <h3 class="font-semibold text-xl">${w.title}</h3>
+              <p class="text-blue-600 text-sm mt-1">${w.date} • ${w.location || ''}</p>
+              <p class="text-gray-600 mt-3 line-clamp-4">${w.description || ''}</p>
+            </div>`;
+        });
+      } else {
+        container.innerHTML = `<p class="text-gray-500 text-center py-10">No workshops yet. Add your first one!</p>`;
+      }
+    }
+
+    async function loadPublications() {
+      const res = await fetch('/api/publications');
+      const data = await res.json();
+      const container = document.getElementById('publicationsList');
+      container.innerHTML = '';
+
+      if (data.data.publications?.length > 0) {
+        data.data.publications.forEach(p => {
+          container.innerHTML += `
+            <div class="bg-white p-6 rounded-3xl shadow hover:shadow-xl transition">
+              <h3 class="font-semibold text-xl">${p.title}</h3>
+              <p class="text-blue-600 text-sm">${p.authors} • ${p.year}</p>
+              <p class="text-gray-600 mt-3 line-clamp-4">${p.description || ''}</p>
+            </div>`;
+        });
+      } else {
+        container.innerHTML = `<p class="text-gray-500 text-center py-10">No publications yet.</p>`;
+      }
+    }
+
     function showSection(section) {
       document.getElementById('workshopsSection').classList.add('hidden');
       document.getElementById('publicationsSection').classList.add('hidden');
@@ -62,8 +102,8 @@
       document.getElementById('pageTitle').textContent = section === 'workshops' ? 'Workshops Management' : 'Publications Management';
     }
 
-    async function showAddWorkshopForm() {
-      const title = prompt("Enter Workshop Title:");
+    async function showAddWorkshopModal() {
+      const title = prompt("Workshop Title:");
       if (!title) return;
       const description = prompt("Description:");
       const date = prompt("Date (YYYY-MM-DD):");
@@ -75,11 +115,11 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({title, description, date, location, image})
       });
-      alert("✅ Workshop Added Successfully!");
-      location.reload();
+      alert("✅ Workshop Added!");
+      loadWorkshops();
     }
 
-    async function showAddPublicationForm() {
+    async function showAddPublicationModal() {
       const title = prompt("Publication Title:");
       if (!title) return;
       const authors = prompt("Authors:");
@@ -93,15 +133,19 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({title, authors, year, description, link, image})
       });
-      alert("✅ Publication Added Successfully!");
-      location.reload();
+      alert("✅ Publication Added!");
+      loadPublications();
     }
 
     function logout() {
-      if (confirm("Are you sure you want to logout?")) {
-        window.location.href = 'login.html';
-      }
+      if (confirm("Logout?")) window.location.href = 'login.html';
     }
+
+    // Load data on page load
+    window.onload = () => {
+      loadWorkshops();
+      loadPublications();
+    };
   </script>
 </body>
 </html>
