@@ -19,7 +19,7 @@ const dbConfig = {
   host: process.env.DB_HOST || 'srv2054.hstgr.io',
   port: parseInt(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER || 'u414490510_admin',
-  password: process.env.DB_PASSWORD ,
+  password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || 'u414490510_grc_db',
   waitForConnections: true,
   connectionLimit: 10,
@@ -72,7 +72,7 @@ function fail(res, message, statusCode = 400) {
   return res.status(statusCode).json({ success: false, error: message });
 }
 
-// Admin Login
+// ====================== ADMIN LOGIN ======================
 const ADMIN_USERNAME = "u414490510_admin";
 const ADMIN_PASSWORD = "@GRCAdmin123";
 
@@ -85,16 +85,79 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// API Routes
+// ====================== WORKSHOPS ROUTES ======================
+
+// Get All Workshops
 app.get('/api/workshops', async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT * FROM workshops ORDER BY date DESC');
+    const [rows] = await pool.execute(
+      'SELECT * FROM workshops ORDER BY start_date DESC'
+    );
     success(res, { total: rows.length, workshops: rows });
   } catch (e) {
+    console.error(e);
     fail(res, 'Database error', 500);
   }
 });
 
+// === CREATE NEW WORKSHOP (Professional) ===
+app.post('/api/workshops', async (req, res) => {
+  try {
+    const {
+      title, description, category, level, start_date, end_date,
+      duration, location, mode, max_participants, fee,
+      instructor_name, instructor_bio, image
+    } = req.body;
+
+    if (!title || !description || !category || !level || !start_date) {
+      return fail(res, "Title, description, category, level and start date are required", 400);
+    }
+
+    // Auto generate slug
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    const sql = `
+      INSERT INTO workshops 
+      (title, slug, description, category, level, start_date, end_date, 
+       duration, location, mode, max_participants, fee, 
+       instructor_name, instructor_bio, image, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Upcoming')
+    `;
+
+    const [result] = await pool.execute(sql, [
+      title, 
+      slug, 
+      description, 
+      category, 
+      level, 
+      start_date, 
+      end_date || null,
+      duration, 
+      location, 
+      mode || 'Online', 
+      max_participants || 500, 
+      fee || 0.00,
+      instructor_name, 
+      instructor_bio, 
+      image || null
+    ]);
+
+    success(res, { 
+      message: "Workshop created successfully!", 
+      workshopId: result.insertId,
+      slug: slug
+    }, 201);
+
+  } catch (error) {
+    console.error('Create Workshop Error:', error);
+    fail(res, 'Failed to create workshop. Please try again.', 500);
+  }
+});
+
+// ====================== PUBLICATIONS ROUTES ======================
 app.get('/api/publications', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM publications ORDER BY year DESC');
@@ -104,6 +167,7 @@ app.get('/api/publications', async (req, res) => {
   }
 });
 
+// Health Check
 app.get('/api/health', (req, res) => {
   success(res, {
     status: 'ok',
