@@ -3,30 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login - GRC</title>
+  <title>Admin • Global Research Centre</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-blue-900 min-h-screen flex items-center justify-center">
-  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-800">Global Research Centre</h1>
-      <p class="text-gray-500">Admin Panel</p>
+<body class="hero-bg min-h-screen flex items-center justify-center">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div class="p-10">
+      <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-900">Global Research Centre</h1>
+        <p class="text-blue-600 font-medium mt-2">ADMIN PANEL</p>
+      </div>
+
+      <h2 class="text-2xl font-semibold text-center mb-8 text-gray-800">Sign In</h2>
+
+      <div class="space-y-6">
+        <input type="text" id="username" value="grcadmin" 
+               class="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-blue-500 text-lg">
+        
+        <input type="password" id="password" value="GrcAdmin2026Secure" 
+               class="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:outline-none focus:border-blue-500 text-lg">
+        
+        <button onclick="handleLogin()" 
+                class="w-full bg-blue-600 hover:bg-blue-700 transition py-4 rounded-2xl text-white font-semibold text-lg">
+          Login to Dashboard
+        </button>
+      </div>
+
+      <p id="message" class="text-red-500 text-center mt-6 font-medium"></p>
     </div>
-    
-    <h2 class="text-2xl font-semibold text-center mb-6">Login</h2>
-    
-    <input type="text" id="username" value="grcadmin" 
-           class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4" placeholder="Username">
-    
-    <input type="password" id="password" value="GrcAdmin2026Secure" 
-           class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-6" placeholder="Password">
-    
-    <button onclick="handleLogin()" 
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
-      Login
-    </button>
-    
-    <p id="message" class="text-center mt-4 text-red-500"></p>
   </div>
 
   <script>
@@ -41,11 +50,10 @@
       });
 
       const data = await res.json();
-
       if (data.success) {
         window.location.href = 'dashboard.html';
       } else {
-        document.getElementById('message').textContent = 'Invalid username or password';
+        document.getElementById('message').textContent = '❌ Invalid credentials';
       }
     }
   </script>
