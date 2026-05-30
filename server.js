@@ -19,8 +19,8 @@ app.set('trust proxy', 1);
 const dbConfig = {
   host: 'localhost',
   port: 3306,
-  user: 'u414490510_admin',        // ← Change this if you created new user
-  password: '@Admin12123434',       // ← Put your NEW password here
+  user: 'u414490510_admin',           // ← Your new username
+  password: '@Admin12123434',         // ← The password you just set
   database: 'u414490510_grc_db',
   waitForConnections: true,
   connectionLimit: 10
@@ -39,32 +39,34 @@ async function initDB() {
   }
 }
 
-// Middleware (rest of the code remains same)
+// Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Static files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', express.static(path.join(__dirname, 'public', 'admin')));
 
+// Rate limit
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api/', apiLimiter);
 
-// Helper functions
+// Helpers
 function success(res, data, statusCode = 200) {
   return res.status(statusCode).json({ success: true, data });
 }
-
 function fail(res, message, statusCode = 400) {
   return res.status(statusCode).json({ success: false, error: message });
 }
 
-// Admin Login
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "admin123";
+// Admin Panel Login
+const ADMIN_USERNAME = "grcadmin";
+const ADMIN_PASSWORD = "GrcAdmin2026Secure";
 
+// Routes
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
@@ -74,13 +76,11 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// API Routes
 app.get('/api/workshops', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM workshops ORDER BY date DESC');
     success(res, { total: rows.length, workshops: rows });
   } catch (e) {
-    console.error(e.message);
     fail(res, 'Database error', 500);
   }
 });
@@ -90,7 +90,6 @@ app.get('/api/publications', async (req, res) => {
     const [rows] = await pool.execute('SELECT * FROM publications ORDER BY year DESC');
     success(res, { total: rows.length, publications: rows });
   } catch (e) {
-    console.error(e.message);
     fail(res, 'Database error', 500);
   }
 });
@@ -99,7 +98,7 @@ app.get('/api/health', (req, res) => {
   success(res, { status: 'ok', dbConnected: !!pool });
 });
 
-// Catch-all
+// Catch-all route
 app.get('*', (req, res) => {
   if (req.url.startsWith('/api/')) return res.status(404).json({ success: false, error: 'Not found' });
   if (req.url.startsWith('/admin/')) {
@@ -108,9 +107,10 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start
+// Start Server
 app.listen(PORT, async () => {
   console.log(`🌐 Server starting on port ${PORT}`);
   await initDB();
   console.log(`🔑 Admin Panel: https://globalresearchcentr.org/admin/login.html`);
+  console.log(`Admin Login → Username: grcadmin | Password: GrcAdmin2026Secure`);
 });
