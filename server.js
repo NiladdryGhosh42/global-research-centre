@@ -1,7 +1,6 @@
 /**
  * Global Research Centre — Backend Server with MySQL (Hostinger)
  */
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -15,15 +14,16 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
-// === DATABASE CONFIGURATION (Hostinger) ===
+// === DATABASE CONFIGURATION ===
 const dbConfig = {
-  host: 'srv2054.hstgr.io',        // ← Updated Hostinger hostname
-  port: 3306,
-  user: 'u414490510_admin',
-  password: 'Admin120#',           // ← CHANGE THIS to your current database password
-  database: 'u414490510_grc_db',
+  host: process.env.DB_HOST || 'srv2054.hstgr.io',
+  port: parseInt(process.env.DB_PORT) || 3306,
+  user: process.env.DB_USER || 'u414490510_admin',
+  password: process.env.DB_PASSWORD ,
+  database: process.env.DB_NAME || 'u414490510_grc_db',
   waitForConnections: true,
   connectionLimit: 10,
+  queueLimit: 0,
   enableKeepAlive: true
 };
 
@@ -41,7 +41,9 @@ async function initDB() {
   } catch (error) {
     console.error('❌ Database connection failed:', error.message);
     if (error.code === 'ER_ACCESS_DENIED_ERROR') {
-      console.error('💡 Tip: Check if password is correct or Remote MySQL access is enabled.');
+      console.error('💡 Tip: Password is incorrect or Remote MySQL not enabled.');
+    } else if (error.code === 'ECONNREFUSED') {
+      console.error('💡 Tip: Check DB_HOST and Remote MySQL settings.');
     }
   }
 }
@@ -57,7 +59,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', express.static(path.join(__dirname, 'public', 'admin')));
 
-// Rate Limit
+// Rate Limiter
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api/', apiLimiter);
 
@@ -71,8 +73,8 @@ function fail(res, message, statusCode = 400) {
 }
 
 // Admin Login
-const ADMIN_USERNAME = "grcadmin";
-const ADMIN_PASSWORD = "GrcAdmin2026Secure";
+const ADMIN_USERNAME = "u414490510_admin";
+const ADMIN_PASSWORD = "Admin120#";
 
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
@@ -103,10 +105,10 @@ app.get('/api/publications', async (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  success(res, { 
-    status: 'ok', 
+  success(res, {
+    status: 'ok',
     dbConnected: !!pool,
-    dbHost: dbConfig.host 
+    dbHost: dbConfig.host
   });
 });
 
