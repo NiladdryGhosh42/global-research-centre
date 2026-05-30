@@ -15,13 +15,13 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
-// === DATABASE CONFIG ===
+// === DATABASE CONFIG FROM ENVIRONMENT VARIABLES ===
 const dbConfig = {
-  host: 'localhost',
-  port: 3306,
-  user: 'u414490510_admin',           // ← Your new username
-  password: '@Admin12123434',         // ← The password you just set
-  database: 'u414490510_grc_db',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT) || 3306,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10
 };
@@ -36,6 +36,8 @@ async function initDB() {
     connection.release();
   } catch (error) {
     console.error('❌ Database connection failed:', error.message);
+    console.error('DB_USER used:', process.env.DB_USER);
+    console.error('DB_NAME used:', process.env.DB_NAME);
   }
 }
 
@@ -46,15 +48,15 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files
+// Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', express.static(path.join(__dirname, 'public', 'admin')));
 
-// Rate limit
+// Rate Limit
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api/', apiLimiter);
 
-// Helpers
+// Helper Functions
 function success(res, data, statusCode = 200) {
   return res.status(statusCode).json({ success: true, data });
 }
@@ -62,11 +64,10 @@ function fail(res, message, statusCode = 400) {
   return res.status(statusCode).json({ success: false, error: message });
 }
 
-// Admin Panel Login
+// Admin Login (Change these later)
 const ADMIN_USERNAME = "grcadmin";
 const ADMIN_PASSWORD = "GrcAdmin2026Secure";
 
-// Routes
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
@@ -76,6 +77,7 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
+// API Routes
 app.get('/api/workshops', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM workshops ORDER BY date DESC');
@@ -98,7 +100,7 @@ app.get('/api/health', (req, res) => {
   success(res, { status: 'ok', dbConnected: !!pool });
 });
 
-// Catch-all route
+// Catch-all Route
 app.get('*', (req, res) => {
   if (req.url.startsWith('/api/')) return res.status(404).json({ success: false, error: 'Not found' });
   if (req.url.startsWith('/admin/')) {
@@ -111,6 +113,5 @@ app.get('*', (req, res) => {
 app.listen(PORT, async () => {
   console.log(`🌐 Server starting on port ${PORT}`);
   await initDB();
-  console.log(`🔑 Admin Panel: https://globalresearchcentr.org/admin/login.html`);
-  console.log(`Admin Login → Username: grcadmin | Password: GrcAdmin2026Secure`);
+  console.log(`🔑 Admin Login → Username: grcadmin | Password: GrcAdmin2026Secure`);
 });
