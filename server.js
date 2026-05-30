@@ -15,12 +15,12 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
-// === TEMPORARY: Hardcoded Database Config (for testing) ===
+// === DATABASE CONFIG ===
 const dbConfig = {
   host: 'localhost',
   port: 3306,
-  user: 'u414490510_admin',
-  password: '@Admin12123434',     // ← Your password here
+  user: 'u414490510_admin',        // ← Change this if you created new user
+  password: '@Admin12123434',       // ← Put your NEW password here
   database: 'u414490510_grc_db',
   waitForConnections: true,
   connectionLimit: 10
@@ -39,7 +39,7 @@ async function initDB() {
   }
 }
 
-// ... rest of the code remains same ...
+// Middleware (rest of the code remains same)
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(morgan('dev'));
@@ -52,7 +52,7 @@ app.use('/admin', express.static(path.join(__dirname, 'public', 'admin')));
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use('/api/', apiLimiter);
 
-// Helper functions, routes, etc. (same as before)
+// Helper functions
 function success(res, data, statusCode = 200) {
   return res.status(statusCode).json({ success: true, data });
 }
@@ -63,7 +63,7 @@ function fail(res, message, statusCode = 400) {
 
 // Admin Login
 const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "@Admin12123434";
+const ADMIN_PASSWORD = "admin123";
 
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
@@ -74,6 +74,7 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
+// API Routes
 app.get('/api/workshops', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM workshops ORDER BY date DESC');
@@ -98,6 +99,7 @@ app.get('/api/health', (req, res) => {
   success(res, { status: 'ok', dbConnected: !!pool });
 });
 
+// Catch-all
 app.get('*', (req, res) => {
   if (req.url.startsWith('/api/')) return res.status(404).json({ success: false, error: 'Not found' });
   if (req.url.startsWith('/admin/')) {
@@ -106,7 +108,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server
+// Start
 app.listen(PORT, async () => {
   console.log(`🌐 Server starting on port ${PORT}`);
   await initDB();
