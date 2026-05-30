@@ -3,52 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - GRC Admin</title>
+  <title>Dashboard • GRC Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="bg-gray-100">
-  <div class="flex h-screen">
+<body class="bg-gray-50 min-h-screen">
+  <div class="flex">
     <!-- Sidebar -->
-    <div class="w-72 bg-white shadow-xl">
-      <div class="p-6 border-b">
-        <h1 class="text-2xl font-bold">GRC Admin</h1>
+    <div class="w-72 bg-white h-screen shadow-xl fixed">
+      <div class="p-8 border-b">
+        <h1 class="text-3xl font-bold text-gray-900">GRC</h1>
+        <p class="text-blue-600 text-sm">Global Research Centre</p>
       </div>
-      <nav class="p-4">
-        <a href="#" onclick="showSection('workshops')" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 active">
-          <i class="fas fa-chalkboard-teacher"></i> Workshops
+      <nav class="p-6">
+        <a href="#" onclick="showSection('workshops')" class="flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-blue-50 text-gray-700 font-medium active">
+          <i class="fas fa-chalkboard-teacher text-xl"></i> Workshops
         </a>
-        <a href="#" onclick="showSection('publications')" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100">
-          <i class="fas fa-book"></i> Publications
+        <a href="#" onclick="showSection('publications')" class="flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-blue-50 text-gray-700 font-medium">
+          <i class="fas fa-book text-xl"></i> Publications
         </a>
       </nav>
     </div>
 
-    <!-- Main Area -->
-    <div class="flex-1 overflow-auto">
-      <div class="p-8">
-        <div class="flex justify-between items-center mb-8">
-          <h1 class="text-3xl font-bold text-gray-800" id="pageTitle">Workshops</h1>
-          <button onclick="logout()" class="text-red-600 hover:text-red-700 font-medium flex items-center gap-2">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </button>
-        </div>
+    <!-- Main Content -->
+    <div class="ml-72 flex-1 p-10">
+      <div class="flex justify-between items-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-900" id="pageTitle">Workshops Management</h1>
+        <button onclick="logout()" class="flex items-center gap-3 text-red-600 hover:text-red-700 font-medium">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
 
-        <!-- Workshops Section -->
-        <div id="workshopsSection">
-          <button onclick="showAddWorkshopForm()" class="mb-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center gap-2">
-            <i class="fas fa-plus"></i> Add New Workshop
-          </button>
-          <div id="workshopsList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-        </div>
+      <!-- Workshops -->
+      <div id="workshopsSection">
+        <button onclick="showAddWorkshopForm()" 
+                class="mb-8 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 text-lg font-medium">
+          <i class="fas fa-plus"></i> Add New Workshop
+        </button>
+        <div id="workshopsList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+      </div>
 
-        <!-- Publications Section -->
-        <div id="publicationsSection" class="hidden">
-          <button onclick="showAddPublicationForm()" class="mb-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center gap-2">
-            <i class="fas fa-plus"></i> Add New Publication
-          </button>
-          <div id="publicationsList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-        </div>
+      <!-- Publications -->
+      <div id="publicationsSection" class="hidden">
+        <button onclick="showAddPublicationForm()" 
+                class="mb-8 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 text-lg font-medium">
+          <i class="fas fa-plus"></i> Add New Publication
+        </button>
+        <div id="publicationsList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
       </div>
     </div>
   </div>
@@ -58,11 +59,11 @@
       document.getElementById('workshopsSection').classList.add('hidden');
       document.getElementById('publicationsSection').classList.add('hidden');
       document.getElementById(section + 'Section').classList.remove('hidden');
-      document.getElementById('pageTitle').textContent = section === 'workshops' ? 'Workshops' : 'Publications';
+      document.getElementById('pageTitle').textContent = section === 'workshops' ? 'Workshops Management' : 'Publications Management';
     }
 
     async function showAddWorkshopForm() {
-      const title = prompt("Workshop Title:");
+      const title = prompt("Enter Workshop Title:");
       if (!title) return;
       const description = prompt("Description:");
       const date = prompt("Date (YYYY-MM-DD):");
@@ -72,9 +73,9 @@
       await fetch('/api/admin/workshops', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ title, description, date, location, image })
+        body: JSON.stringify({title, description, date, location, image})
       });
-      alert("Workshop Added Successfully!");
+      alert("✅ Workshop Added Successfully!");
       location.reload();
     }
 
@@ -85,19 +86,21 @@
       const year = prompt("Year:");
       const description = prompt("Description:");
       const link = prompt("Link/URL:");
-      const image = prompt("Image URL (optional):");
+      const image = prompt("Image URL:");
 
       await fetch('/api/admin/publications', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ title, authors, year, description, link, image })
+        body: JSON.stringify({title, authors, year, description, link, image})
       });
-      alert("Publication Added Successfully!");
+      alert("✅ Publication Added Successfully!");
       location.reload();
     }
 
     function logout() {
-      if (confirm("Logout?")) window.location.href = 'login.html';
+      if (confirm("Are you sure you want to logout?")) {
+        window.location.href = 'login.html';
+      }
     }
   </script>
 </body>
