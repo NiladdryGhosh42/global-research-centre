@@ -74,7 +74,7 @@ function fail(res, message, statusCode = 400) {
 
 // Admin Login
 const ADMIN_USERNAME = "u414490510_admin";
-const ADMIN_PASSWORD = "Admin120#";
+const ADMIN_PASSWORD = "@GRCAdmin123";
 
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
