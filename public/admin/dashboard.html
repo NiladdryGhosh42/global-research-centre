@@ -3,59 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - GRC</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f8fafc; margin: 0; padding: 20px; }
-    .header { background: #1e3a5f; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-    th { background: #f1f5f9; }
-    button { padding: 8px 16px; margin: 4px; border: none; border-radius: 6px; cursor: pointer; }
-    .btn-add { background: #22c55e; color: white; }
-    .btn-edit { background: #3b82f6; color: white; }
-  </style>
+  <title>Dashboard - GRC Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
-  <div class="header">
-    <h2>🔐 Global Research Centre - Admin Dashboard</h2>
-    <button onclick="logout()">Logout</button>
-  </div>
+<body class="bg-gray-100">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="w-72 bg-white shadow-xl">
+      <div class="p-6 border-b">
+        <h1 class="text-2xl font-bold">GRC Admin</h1>
+      </div>
+      <nav class="p-4">
+        <a href="#" onclick="showSection('workshops')" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 active">
+          <i class="fas fa-chalkboard-teacher"></i> Workshops
+        </a>
+        <a href="#" onclick="showSection('publications')" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100">
+          <i class="fas fa-book"></i> Publications
+        </a>
+      </nav>
+    </div>
 
-  <div class="card">
-    <h3>Workshops Management</h3>
-    <button class="btn-add" onclick="alert('Add new workshop coming soon')">+ Add New Workshop</button>
-    <table id="workshops-table">
-      <thead><tr><th>Title</th><th>Date</th><th>Seats</th><th>Enrolled</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <!-- Main Area -->
+    <div class="flex-1 overflow-auto">
+      <div class="p-8">
+        <div class="flex justify-between items-center mb-8">
+          <h1 class="text-3xl font-bold text-gray-800" id="pageTitle">Workshops</h1>
+          <button onclick="logout()" class="text-red-600 hover:text-red-700 font-medium flex items-center gap-2">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+
+        <!-- Workshops Section -->
+        <div id="workshopsSection">
+          <button onclick="showAddWorkshopForm()" class="mb-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center gap-2">
+            <i class="fas fa-plus"></i> Add New Workshop
+          </button>
+          <div id="workshopsList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+
+        <!-- Publications Section -->
+        <div id="publicationsSection" class="hidden">
+          <button onclick="showAddPublicationForm()" class="mb-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center gap-2">
+            <i class="fas fa-plus"></i> Add New Publication
+          </button>
+          <div id="publicationsList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    async function loadData() {
-      try {
-        const res = await fetch('/api/workshops');
-        const data = await res.json();
-        const tbody = document.querySelector('#workshops-table tbody');
-        tbody.innerHTML = data.workshops.map(w => `
-          <tr>
-            <td>${w.title}</td>
-            <td>${w.date}</td>
-            <td>${w.seats}</td>
-            <td>${w.enrolled}</td>
-            <td><button class="btn-edit" onclick="alert('Editing ${w.title} - Coming soon')">Edit</button></td>
-          </tr>
-        `).join('');
-      } catch(e) {
-        console.log("Could not load workshops");
-      }
+    function showSection(section) {
+      document.getElementById('workshopsSection').classList.add('hidden');
+      document.getElementById('publicationsSection').classList.add('hidden');
+      document.getElementById(section + 'Section').classList.remove('hidden');
+      document.getElementById('pageTitle').textContent = section === 'workshops' ? 'Workshops' : 'Publications';
+    }
+
+    async function showAddWorkshopForm() {
+      const title = prompt("Workshop Title:");
+      if (!title) return;
+      const description = prompt("Description:");
+      const date = prompt("Date (YYYY-MM-DD):");
+      const location = prompt("Location:");
+      const image = prompt("Image URL (optional):");
+
+      await fetch('/api/admin/workshops', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ title, description, date, location, image })
+      });
+      alert("Workshop Added Successfully!");
+      location.reload();
+    }
+
+    async function showAddPublicationForm() {
+      const title = prompt("Publication Title:");
+      if (!title) return;
+      const authors = prompt("Authors:");
+      const year = prompt("Year:");
+      const description = prompt("Description:");
+      const link = prompt("Link/URL:");
+      const image = prompt("Image URL (optional):");
+
+      await fetch('/api/admin/publications', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ title, authors, year, description, link, image })
+      });
+      alert("Publication Added Successfully!");
+      location.reload();
     }
 
     function logout() {
-      window.location.href = 'login.html';
+      if (confirm("Logout?")) window.location.href = 'login.html';
     }
-
-    window.onload = loadData;
   </script>
 </body>
 </html>
