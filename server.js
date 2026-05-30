@@ -1,5 +1,5 @@
 /**
- * Global Research Centre — Backend Server with MySQL
+ * Global Research Centre — Backend Server with MySQL (Hostinger)
  */
 
 const express = require('express');
@@ -15,15 +15,16 @@ const PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
-// === TEMPORARY HARDCODED FOR TESTING ===
+// === DATABASE CONFIGURATION (Hostinger) ===
 const dbConfig = {
-  host: 'localhost',
+  host: 'srv2054.hstgr.io',        // ← Updated Hostinger hostname
   port: 3306,
   user: 'u414490510_admin',
-  password: 'Admin120#',        // ← Put the new password here
+  password: 'Admin120#',           // ← CHANGE THIS to your current database password
   database: 'u414490510_grc_db',
   waitForConnections: true,
-  connectionLimit: 10
+  connectionLimit: 10,
+  enableKeepAlive: true
 };
 
 let pool;
@@ -33,11 +34,15 @@ async function initDB() {
     pool = mysql.createPool(dbConfig);
     const connection = await pool.getConnection();
     console.log('✅ MySQL Database Connected Successfully');
+    console.log(`   Host: ${dbConfig.host}`);
+    console.log(`   Database: ${dbConfig.database}`);
+    console.log(`   User: ${dbConfig.user}`);
     connection.release();
   } catch (error) {
     console.error('❌ Database connection failed:', error.message);
-    console.error('DB_USER used:', process.env.DB_USER);
-    console.error('DB_NAME used:', process.env.DB_NAME);
+    if (error.code === 'ER_ACCESS_DENIED_ERROR') {
+      console.error('💡 Tip: Check if password is correct or Remote MySQL access is enabled.');
+    }
   }
 }
 
@@ -60,11 +65,12 @@ app.use('/api/', apiLimiter);
 function success(res, data, statusCode = 200) {
   return res.status(statusCode).json({ success: true, data });
 }
+
 function fail(res, message, statusCode = 400) {
   return res.status(statusCode).json({ success: false, error: message });
 }
 
-// Admin Login (Change these later)
+// Admin Login
 const ADMIN_USERNAME = "grcadmin";
 const ADMIN_PASSWORD = "GrcAdmin2026Secure";
 
@@ -97,12 +103,18 @@ app.get('/api/publications', async (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  success(res, { status: 'ok', dbConnected: !!pool });
+  success(res, { 
+    status: 'ok', 
+    dbConnected: !!pool,
+    dbHost: dbConfig.host 
+  });
 });
 
 // Catch-all Route
 app.get('*', (req, res) => {
-  if (req.url.startsWith('/api/')) return res.status(404).json({ success: false, error: 'Not found' });
+  if (req.url.startsWith('/api/')) {
+    return res.status(404).json({ success: false, error: 'Not found' });
+  }
   if (req.url.startsWith('/admin/')) {
     return res.sendFile(path.join(__dirname, 'public', req.url));
   }
